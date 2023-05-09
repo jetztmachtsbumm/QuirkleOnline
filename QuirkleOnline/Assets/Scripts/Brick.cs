@@ -1,47 +1,32 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
+using Unity.Netcode;
 using UnityEngine;
 
-public struct BrickData
+public class Brick : MonoBehaviour
 {
-    
-    public enum BrickShape
+
+    [SerializeField] private TextMeshPro shapeText;
+    [SerializeField] private TextMeshPro colorText;
+
+    private BrickData brickData;
+
+    public BrickData GetBrickData()
     {
-        CIRCLE,
-        CROOS,
-        FLOWER,
-        SQUARE,
-        STAR,
-        DIAMOND
+        return brickData;
     }
 
-    public enum BrickColor
+    public void SetBrickData(BrickData brickData)
     {
-        PURPLE,
-        RED,
-        BLUE,
-        YELLOW,
-        GREEN,
-        ORANGE
+        this.brickData = brickData;
+        UpdateVisual();
     }
 
-    private BrickShape brickShape;
-    private BrickColor brickColor;
-
-    public BrickData(BrickShape brickShape, BrickColor brickColor)
+    public void UpdateVisual()
     {
-        this.brickShape = brickShape;
-        this.brickColor = brickColor;
-    }
-
-    public BrickShape GetBrickShape()
-    {
-        return brickShape;
-    }
-
-    public BrickColor GetBrickColor()
-    {
-        return brickColor;
+        shapeText.text = brickData.GetBrickShape().ToString();
+        colorText.text = brickData.GetBrickColor().ToString();
     }
 
 }

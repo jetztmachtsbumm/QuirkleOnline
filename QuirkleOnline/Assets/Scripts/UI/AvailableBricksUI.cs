@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class AvailableBricksUI : MonoBehaviour
 {
@@ -28,6 +29,12 @@ public class AvailableBricksUI : MonoBehaviour
         foreach(BrickData availableBrick in GameManager.Instance.GetAvailableBricks())
         {
             Transform template = Instantiate(brickUITemplate, transform);
+
+            template.GetComponent<Button>().onClick.AddListener(() =>
+            {
+                BrickGhost.Instance.SetBrickDataServerRpc(availableBrick);
+            });
+
             template.Find("ShapeText").GetComponent<TextMeshProUGUI>().text = availableBrick.GetBrickShape().ToString();
             template.Find("ColorText").GetComponent<TextMeshProUGUI>().text = availableBrick.GetBrickColor().ToString();
         }
