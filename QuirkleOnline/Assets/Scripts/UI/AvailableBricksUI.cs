@@ -32,7 +32,10 @@ public class AvailableBricksUI : MonoBehaviour
 
             template.GetComponent<Button>().onClick.AddListener(() =>
             {
-                BrickGhost.Instance.SetBrickDataServerRpc(availableBrick);
+                if (MultiplayerManager.Instance.IsClientInTurn())
+                {
+                    BrickGhost.Instance.SetBrickDataServerRpc(availableBrick);
+                }
             });
 
             template.Find("ShapeText").GetComponent<TextMeshProUGUI>().text = availableBrick.GetBrickShape().ToString();

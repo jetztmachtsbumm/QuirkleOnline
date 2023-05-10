@@ -27,13 +27,19 @@ public class BrickGhost : NetworkBehaviour
 
     private void Update()
     {
-        if (NetworkManager.Singleton.IsHost)
+        if (MultiplayerManager.Instance.IsClientInTurn())
         {
             if (!EventSystem.current.IsPointerOverGameObject())
             {
-                transform.position = MouseWorld.Instance.GetMouseWorldPosition() + new Vector3(0, 3, 0);
+                ChangePositionServerRpc(MouseWorld.Instance.GetMouseWorldPosition() + new Vector3(0, 3, 0));
             }
         }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void ChangePositionServerRpc(Vector3 position)
+    {
+        transform.position = position;
     }
 
     public BrickData GetBrickData()
@@ -65,11 +71,11 @@ public class BrickGhost : NetworkBehaviour
     {
         Transform brickPrefab = Resources.Load<Transform>("BrickTemplate");
 
-        Vector3 placePosition = new Vector3(BrickGhost.Instance.transform.position.x, 0, BrickGhost.Instance.transform.position.z);
+        Vector3 placePosition = new Vector3(transform.position.x, 0, transform.position.z);
 
         Transform spawnedBrick = Instantiate(brickPrefab, placePosition, Quaternion.identity);
 
-        spawnedBrick.GetComponent<Brick>().SetBrickData(BrickGhost.Instance.GetBrickData());
+        spawnedBrick.GetComponent<Brick>().SetBrickData(brickData);
     }
 
     private void UpdateVisual()

@@ -12,7 +12,10 @@ public class PlayerControlls : MonoBehaviour
         {
             if (!EventSystem.current.IsPointerOverGameObject())
             {
+                if (!MultiplayerManager.Instance.IsClientInTurn()) return;
+
                 BrickGhost.Instance.PlaceBrickServerRpc();
+                MultiplayerManager.Instance.NextPlayerTurnServerRpc();
             }
         }
     }

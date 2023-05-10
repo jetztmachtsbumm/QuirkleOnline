@@ -9,6 +9,8 @@ public class MultiplayerManager : NetworkBehaviour
     public static MultiplayerManager Instance { get; private set; }
 
     private List<BrickData> drawableBricks;
+    private ulong clientInTurn;
+
     private int clientsReady;
 
     private void Awake()
@@ -33,7 +35,7 @@ public class MultiplayerManager : NetworkBehaviour
 
     private void NetworkManager_OnClientConnectedCallback(ulong obj)
     {
-        if(NetworkManager.ConnectedClientsList.Count > 1)
+        if(NetworkManager.ConnectedClientsList.Count > 2)
         {
             NetworkManager.SceneManager.LoadScene("GameScene", UnityEngine.SceneManagement.LoadSceneMode.Single);
         }
@@ -56,6 +58,8 @@ public class MultiplayerManager : NetworkBehaviour
                 DrawBrickClientRpc(NetworkManager.ConnectedClientsIds[i]);
             }
         }
+
+        SetClientInTurnClientRpc(NetworkManager.LocalClientId);
     }
 
     [ClientRpc]
@@ -108,6 +112,40 @@ public class MultiplayerManager : NetworkBehaviour
         {
             StartGame();
         }
+    }
+
+    [ClientRpc]
+    private void SetClientInTurnClientRpc(ulong clientId)
+    {
+        clientInTurn = clientId;
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void NextPlayerTurnServerRpc()
+    {
+        ulong nextClientInTurn = 0;
+
+        for(int index = 0; index < NetworkManager.ConnectedClientsIds.Count; index++)
+        {
+            if (NetworkManager.ConnectedClientsIds[index] == clientInTurn)
+            {
+                if(index == NetworkManager.ConnectedClientsIds.Count - 1)
+                {
+                    nextClientInTurn = NetworkManager.ConnectedClientsIds[0];
+                }
+                else
+                {
+                    nextClientInTurn = NetworkManager.ConnectedClientsIds[index + 1];
+                }
+            }
+        }
+
+        SetClientInTurnClientRpc(nextClientInTurn);
+    }
+
+    public bool IsClientInTurn()
+    {
+        return clientInTurn == NetworkManager.LocalClientId;
     }
 
 }
