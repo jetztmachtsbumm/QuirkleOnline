@@ -1195,8 +1195,8 @@ GameObject:
   - component: {fileID: 8075239108349795631}
   - component: {fileID: 4925111332138020756}
   - component: {fileID: 8075239108349795633}
-  - component: {fileID: 8075239108349795634}
   - component: {fileID: 8075239108349795635}
+  - component: {fileID: 8075239108349795636}
   m_Layer: 0
   m_Name: BrickGhost
   m_TagString: Untagged
@@ -1630,7 +1630,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shapeText: {fileID: 692925210538527662}
   colorText: {fileID: 6435915832824345476}
---- !u!114 &8075239108349795634
+--- !u!114 &8075239108349795635
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 146847233091472412}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 950064806
+  AlwaysReplicateAsRoot: 0
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+--- !u!114 &8075239108349795636
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1656,22 +1672,6 @@ MonoBehaviour:
   ScaleThreshold: 0.01
   InLocalSpace: 0
   Interpolate: 1
---- !u!114 &8075239108349795635
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 146847233091472412}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 950064806
-  AlwaysReplicateAsRoot: 0
-  DontDestroyWithOwner: 0
-  AutoObjectParentSync: 1
 --- !u!224 &8753547824903156312
 RectTransform:
   m_ObjectHideFlags: 0
