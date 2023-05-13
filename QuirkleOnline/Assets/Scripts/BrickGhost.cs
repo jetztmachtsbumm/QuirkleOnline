@@ -31,15 +31,15 @@ public class BrickGhost : NetworkBehaviour
         {
             if (!EventSystem.current.IsPointerOverGameObject())
             {
-                ChangePositionServerRpc(MouseWorld.Instance.GetMouseWorldPosition() + new Vector3(0, 3, 0));
+                ChangePositionServerRpc(GridSystem.Instance.GetGridCellAtWorldPosition(MouseWorld.Instance.GetMouseWorldPosition()));
             }
         }
     }
 
     [ServerRpc(RequireOwnership = false)]
-    private void ChangePositionServerRpc(Vector3 position)
+    private void ChangePositionServerRpc(GridCell gridCell)
     {
-        transform.position = position;
+        transform.position = GridSystem.Instance.GetWorldPositionOfGridCell(gridCell) + new Vector3(0, 3, 0);
     }
 
     public BrickData GetBrickData()
@@ -61,21 +61,36 @@ public class BrickGhost : NetworkBehaviour
     }
 
     [ServerRpc(RequireOwnership = false)]
-    public void PlaceBrickServerRpc()
+    public void PlaceBrickServerRpc(GridCell gridCell)
     {
-        PlaceBrickClientRpc();
+        PlaceBrickClientRpc(gridCell);
     }
 
     [ClientRpc]
-    private void PlaceBrickClientRpc()
+    private void PlaceBrickClientRpc(GridCell gridCell)
     {
         Transform brickPrefab = Resources.Load<Transform>("BrickTemplate");
 
-        Vector3 placePosition = new Vector3(transform.position.x, 0, transform.position.z);
+        if (GridSystem.Instance.IsGridCellOccupied(gridCell))
+        {
+            return;
+        }
+
+        Vector3 placePosition = GridSystem.Instance.GetWorldPositionOfGridCell(gridCell);
 
         Transform spawnedBrick = Instantiate(brickPrefab, placePosition, Quaternion.identity);
 
         spawnedBrick.GetComponent<Brick>().SetBrickData(brickData);
+
+        gridCell.SetBrickData(brickData);
+        gridCell.SetIsOccupied(true);
+
+        GridSystem.Instance.UpdateGridCell(gridCell);
+
+        if (MultiplayerManager.Instance.IsClientInTurn())
+        {
+            MultiplayerManager.Instance.NextPlayerTurnServerRpc();
+        }
     }
 
     private void UpdateVisual()

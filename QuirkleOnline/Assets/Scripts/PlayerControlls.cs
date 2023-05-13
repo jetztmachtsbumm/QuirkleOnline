@@ -14,8 +14,7 @@ public class PlayerControlls : MonoBehaviour
             {
                 if (!MultiplayerManager.Instance.IsClientInTurn()) return;
 
-                BrickGhost.Instance.PlaceBrickServerRpc();
-                MultiplayerManager.Instance.NextPlayerTurnServerRpc();
+                BrickGhost.Instance.PlaceBrickServerRpc(GridSystem.Instance.GetGridCellAtWorldPosition(BrickGhost.Instance.transform.position));
             }
         }
     }

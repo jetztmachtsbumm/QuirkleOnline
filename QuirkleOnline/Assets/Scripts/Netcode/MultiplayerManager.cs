@@ -35,7 +35,7 @@ public class MultiplayerManager : NetworkBehaviour
 
     private void NetworkManager_OnClientConnectedCallback(ulong obj)
     {
-        if(NetworkManager.ConnectedClientsList.Count > 2)
+        if(NetworkManager.ConnectedClientsList.Count > 1)
         {
             NetworkManager.SceneManager.LoadScene("GameScene", UnityEngine.SceneManagement.LoadSceneMode.Single);
         }
@@ -58,6 +58,8 @@ public class MultiplayerManager : NetworkBehaviour
                 DrawBrickClientRpc(NetworkManager.ConnectedClientsIds[i]);
             }
         }
+
+        GridSystem.Instance.InitializeGrid();
 
         SetClientInTurnClientRpc(NetworkManager.LocalClientId);
     }
