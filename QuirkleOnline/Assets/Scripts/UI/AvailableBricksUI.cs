@@ -35,6 +35,7 @@ public class AvailableBricksUI : MonoBehaviour
                 if (MultiplayerManager.Instance.IsClientInTurn())
                 {
                     BrickGhost.Instance.SetBrickDataServerRpc(availableBrick);
+                    GameManager.Instance.SetIsBrickSelected(true);
                 }
             });
 

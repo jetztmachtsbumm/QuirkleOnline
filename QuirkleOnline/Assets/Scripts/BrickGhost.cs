@@ -23,6 +23,8 @@ public class BrickGhost : NetworkBehaviour
             Destroy(gameObject);
         }
         Instance = this;
+
+        HideServerRpc();
     }
 
     private void Update()
@@ -87,9 +89,12 @@ public class BrickGhost : NetworkBehaviour
 
         GridSystem.Instance.UpdateGridCell(gridCell);
 
+        GameManager.Instance.RemoveBrick(brickData);
+
         if (MultiplayerManager.Instance.IsClientInTurn())
         {
             MultiplayerManager.Instance.NextPlayerTurnServerRpc();
+            GameManager.Instance.SetIsBrickSelected(false);
         }
     }
 
@@ -97,6 +102,30 @@ public class BrickGhost : NetworkBehaviour
     {
         shapeText.text = brickData.GetBrickShape().ToString();
         colorText.text = brickData.GetBrickColor().ToString();
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void ShowServerRpc()
+    {
+        ShowClientRpc();
+    }
+
+    [ClientRpc]
+    private void ShowClientRpc()
+    {
+        gameObject.SetActive(true);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void HideServerRpc()
+    {
+        HideClientRpc();
+    }
+
+    [ClientRpc]
+    private void HideClientRpc()
+    {
+        gameObject.SetActive(false);
     }
 
 }

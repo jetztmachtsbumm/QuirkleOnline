@@ -12,6 +12,7 @@ public class GameManager : MonoBehaviour
     public event EventHandler OnAvailableBricksChanged;
 
     private List<BrickData> availableBricks;
+    private bool isBrickSelected;
 
     private void Awake()
     {
@@ -27,15 +28,34 @@ public class GameManager : MonoBehaviour
         MultiplayerManager.Instance.IncreaseClientsReadyServerRpc();
     }
 
+    private void Update()
+    {
+        if (MultiplayerManager.Instance.IsClientInTurn() && !isBrickSelected)
+        {
+            BrickGhost.Instance.HideServerRpc();
+        }
+    }
+
     public void DrawBrick(BrickData brick)
     {
         availableBricks.Add(brick);
         OnAvailableBricksChanged?.Invoke(this, EventArgs.Empty);
     }
 
+    public void RemoveBrick(BrickData brick)
+    {
+        availableBricks.Remove(brick);
+        OnAvailableBricksChanged?.Invoke(this, EventArgs.Empty);
+    }
+
     public List<BrickData> GetAvailableBricks()
     {
         return availableBricks;
+    }
+
+    public void SetIsBrickSelected(bool isBrickSelected)
+    {
+        this.isBrickSelected = isBrickSelected;
     }
 
 }
