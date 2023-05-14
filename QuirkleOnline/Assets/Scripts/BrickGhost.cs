@@ -14,6 +14,8 @@ public class BrickGhost : NetworkBehaviour
     [SerializeField] private TextMeshPro colorText;
 
     private BrickData brickData;
+    private List<Transform> validGridCellVisuals;
+    private Transform validGridCellVisual;
 
     private void Awake()
     {
@@ -24,6 +26,8 @@ public class BrickGhost : NetworkBehaviour
         }
         Instance = this;
 
+        validGridCellVisuals = new List<Transform>();
+        validGridCellVisual = Resources.Load<Transform>("ValidGridCellVisual");
         HideServerRpc();
     }
 
@@ -53,6 +57,7 @@ public class BrickGhost : NetworkBehaviour
     public void SetBrickDataServerRpc(BrickData brickData)
     {
         SetBrickDataClientRpc(brickData);
+        ShowValidGridCellsClientRpc();
     }
 
     [ClientRpc]
@@ -95,6 +100,7 @@ public class BrickGhost : NetworkBehaviour
         {
             MultiplayerManager.Instance.NextPlayerTurnServerRpc();
             GameManager.Instance.SetIsBrickSelected(false);
+            HideValidGridCells();
         }
     }
 
@@ -126,6 +132,27 @@ public class BrickGhost : NetworkBehaviour
     private void HideClientRpc()
     {
         gameObject.SetActive(false);
+    }
+
+    [ClientRpc]
+    public void ShowValidGridCellsClientRpc()
+    {
+        if(!MultiplayerManager.Instance.IsClientInTurn()) return;
+
+        HideValidGridCells();
+        validGridCellVisuals = new List<Transform>();
+        foreach (GridCell validCell in GridSystem.Instance.GetValidCells(brickData))
+        {
+            validGridCellVisuals.Add(Instantiate(validGridCellVisual, GridSystem.Instance.GetWorldPositionOfGridCell(validCell), Quaternion.identity, GridSystem.Instance.transform));
+        }
+    }
+
+    public void HideValidGridCells()
+    {
+        foreach (Transform visual in validGridCellVisuals)
+        {
+            Destroy(visual != null ? visual.gameObject : null);
+        }
     }
 
 }

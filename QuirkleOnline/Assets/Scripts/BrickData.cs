@@ -9,6 +9,7 @@ public struct BrickData : IEquatable<BrickData>, INetworkSerializable
     
     public enum BrickShape
     {
+        NONE,
         CIRCLE,
         CROSS,
         FLOWER,
@@ -19,6 +20,7 @@ public struct BrickData : IEquatable<BrickData>, INetworkSerializable
 
     public enum BrickColor
     {
+        NONE,
         PURPLE,
         RED,
         BLUE,
@@ -55,6 +57,12 @@ public struct BrickData : IEquatable<BrickData>, INetworkSerializable
     public BrickColor GetBrickColor()
     {
         return brickColor;
+    }
+
+    public static bool Match(BrickData brickData1, BrickData brickData2)
+    {
+        return (brickData1.brickShape == brickData2.brickShape || brickData1.brickColor == brickData2.brickColor) &&
+                !(brickData1.brickShape == brickData2.brickShape && brickData1.brickColor == brickData2.brickColor);
     }
 
 }

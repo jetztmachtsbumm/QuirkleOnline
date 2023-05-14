@@ -92,10 +92,10 @@ public class MultiplayerManager : NetworkBehaviour
     {
         for(int brickQuantity = 0; brickQuantity < 2; brickQuantity++)
         {
-            for(int shape = 0; shape < 6; shape++)
+            for(int shape = 1; shape < 7; shape++)
             {
                 BrickData.BrickShape brickShape = (BrickData.BrickShape)shape;
-                for (int color = 0; color < 6; color++)
+                for (int color = 1; color < 7; color++)
                 {
                     BrickData.BrickColor brickColor = (BrickData.BrickColor)color;
 
