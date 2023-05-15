@@ -103,6 +103,7 @@ public class BrickGhost : NetworkBehaviour
         {
             GameManager.Instance.RemoveBrick(brickData);
             GameManager.Instance.IncreaseScore(GridSystem.Instance.CalculateScore(gridCell));
+            MultiplayerManager.Instance.DrawBrickServerRpc(NetworkManager.LocalClientId);
             MultiplayerManager.Instance.NextPlayerTurnServerRpc();
             GameManager.Instance.SetIsBrickSelected(false);
             HideValidGridCells();

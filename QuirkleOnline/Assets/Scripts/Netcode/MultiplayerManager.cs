@@ -72,6 +72,12 @@ public class MultiplayerManager : NetworkBehaviour
         BrickGhost.Instance.PlaceBrick(gridCell);
     }
 
+    [ServerRpc(RequireOwnership = false)]
+    public void DrawBrickServerRpc(ulong clientId)
+    {
+        DrawBrickClientRpc(clientId);
+    }
+
     [ClientRpc]
     private void DrawBrickClientRpc(ulong clientId)
     {
