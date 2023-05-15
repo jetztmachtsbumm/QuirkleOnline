@@ -144,6 +144,21 @@ public class GridSystem : NetworkBehaviour
         return neighbours;
     }
 
+    public int CalculateScore(GridCell gridCell)
+    {
+        int score = 0;
+        int hRowLength = GetHorizontalBrickRow(gridCell).Count;
+        int vRowLength = GetVerticalBrickRow(gridCell).Count;
+
+        score += hRowLength;
+        if (hRowLength == 6) score += 6;
+
+        score += vRowLength;
+        if (vRowLength == 6) score += 6;
+
+        return score - 1;
+    }
+
     private List<GridCell> GetHorizontalBrickRow(GridCell gridCell)
     {
         List<GridCell> brickRow = new List<GridCell>();

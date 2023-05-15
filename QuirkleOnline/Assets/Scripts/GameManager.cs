@@ -10,9 +10,11 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance { get; private set; }
 
     public event EventHandler OnAvailableBricksChanged;
+    public event EventHandler<int> OnScoreChanged;
 
     private List<BrickData> availableBricks;
     private bool isBrickSelected;
+    private int score;
 
     private void Awake()
     {
@@ -56,6 +58,12 @@ public class GameManager : MonoBehaviour
     public void SetIsBrickSelected(bool isBrickSelected)
     {
         this.isBrickSelected = isBrickSelected;
+    }
+
+    public void IncreaseScore(int score)
+    {
+        this.score += score;
+        OnScoreChanged?.Invoke(this, this.score);
     }
 
 }
