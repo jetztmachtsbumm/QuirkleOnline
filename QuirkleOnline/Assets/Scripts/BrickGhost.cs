@@ -73,6 +73,11 @@ public class BrickGhost : NetworkBehaviour
         PlaceBrickClientRpc(gridCell);
     }
 
+    public void PlaceBrick(GridCell gridCell)
+    {
+        PlaceBrickServerRpc(gridCell);
+    }
+
     [ClientRpc]
     private void PlaceBrickClientRpc(GridCell gridCell)
     {
@@ -94,10 +99,9 @@ public class BrickGhost : NetworkBehaviour
 
         GridSystem.Instance.UpdateGridCell(gridCell);
 
-        GameManager.Instance.RemoveBrick(brickData);
-
         if (MultiplayerManager.Instance.IsClientInTurn())
         {
+            GameManager.Instance.RemoveBrick(brickData);
             MultiplayerManager.Instance.NextPlayerTurnServerRpc();
             GameManager.Instance.SetIsBrickSelected(false);
             HideValidGridCells();

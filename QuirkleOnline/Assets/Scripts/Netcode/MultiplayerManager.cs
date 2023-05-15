@@ -62,6 +62,14 @@ public class MultiplayerManager : NetworkBehaviour
         GridSystem.Instance.InitializeGrid();
 
         SetClientInTurnClientRpc(NetworkManager.LocalClientId);
+        PlaceFirstBrick();
+    }
+
+    private void PlaceFirstBrick()
+    {
+        GridCell gridCell = GridSystem.Instance.GetGridCellAtWorldPosition(new Vector3(50, 0, 50));
+        BrickGhost.Instance.SetBrickDataServerRpc(GameManager.Instance.GetAvailableBricks()[0]);
+        BrickGhost.Instance.PlaceBrick(gridCell);
     }
 
     [ClientRpc]
