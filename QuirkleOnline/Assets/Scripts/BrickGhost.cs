@@ -68,22 +68,22 @@ public class BrickGhost : NetworkBehaviour
     }
 
     [ServerRpc(RequireOwnership = false)]
-    public void PlaceBrickServerRpc(GridCell gridCell)
+    public void PlaceBrickServerRpc(GridCell gridCell, bool firstTurn = false)
     {
-        PlaceBrickClientRpc(gridCell);
-    }
-
-    public void PlaceBrick(GridCell gridCell)
-    {
-        PlaceBrickServerRpc(gridCell);
+        PlaceBrickClientRpc(gridCell, firstTurn);
     }
 
     [ClientRpc]
-    private void PlaceBrickClientRpc(GridCell gridCell)
+    private void PlaceBrickClientRpc(GridCell gridCell, bool firstTurn)
     {
         Transform brickPrefab = Resources.Load<Transform>("BrickTemplate");
 
         if (GridSystem.Instance.IsGridCellOccupied(gridCell))
+        {
+            return;
+        }
+
+        if (!GridSystem.Instance.GetValidCells(brickData).Contains(gridCell) && !firstTurn)
         {
             return;
         }

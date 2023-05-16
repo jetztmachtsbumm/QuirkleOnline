@@ -69,7 +69,7 @@ public class MultiplayerManager : NetworkBehaviour
     {
         GridCell gridCell = GridSystem.Instance.GetGridCellAtWorldPosition(new Vector3(50, 0, 50));
         BrickGhost.Instance.SetBrickDataServerRpc(GameManager.Instance.GetAvailableBricks()[0]);
-        BrickGhost.Instance.PlaceBrick(gridCell);
+        BrickGhost.Instance.PlaceBrickServerRpc(gridCell, true);
     }
 
     [ServerRpc(RequireOwnership = false)]
