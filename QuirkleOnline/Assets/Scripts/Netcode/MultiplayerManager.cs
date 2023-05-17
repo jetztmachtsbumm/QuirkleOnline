@@ -5,13 +5,13 @@ using UnityEngine;
 
 public class MultiplayerManager : NetworkBehaviour
 {
-    
+
     public static MultiplayerManager Instance { get; private set; }
 
     private List<BrickData> drawableBricks;
     private ulong clientInTurn;
-
     private int clientsReady;
+    private string playerName;
 
     private void Awake()
     {
@@ -25,20 +25,12 @@ public class MultiplayerManager : NetworkBehaviour
         DontDestroyOnLoad(gameObject);
 
         drawableBricks = new List<BrickData>();
+        playerName = PlayerPrefs.GetString("PlayerName", "Player#" + Random.Range(1000, 10000));
     }
 
     public void StartHost()
     {
-        NetworkManager.OnClientConnectedCallback += NetworkManager_OnClientConnectedCallback;
         NetworkManager.StartHost();
-    }
-
-    private void NetworkManager_OnClientConnectedCallback(ulong obj)
-    {
-        if(NetworkManager.ConnectedClientsList.Count > 1)
-        {
-            NetworkManager.SceneManager.LoadScene("GameScene", UnityEngine.SceneManagement.LoadSceneMode.Single);
-        }
     }
 
     public void StartClient()
@@ -50,19 +42,26 @@ public class MultiplayerManager : NetworkBehaviour
     {
         if (!IsHost) return;
 
+        LobbyManager.Instance.DeleteLobby();
+
         FillDrawableBricksClientRpc();
-        for(int i = 0; i < NetworkManager.ConnectedClientsIds.Count; i++)
-        {
-            for(int j = 0; j < 6; j++)
-            {
-                DrawBrickClientRpc(NetworkManager.ConnectedClientsIds[i]);
-            }
-        }
+        DrawBricks();
 
         GridSystem.Instance.InitializeGrid();
 
         SetClientInTurnClientRpc(NetworkManager.LocalClientId);
         PlaceFirstBrick();
+    }
+
+    private void DrawBricks()
+    {
+        for (int i = 0; i < NetworkManager.ConnectedClientsIds.Count; i++)
+        {
+            for (int j = 0; j < 6; j++)
+            {
+                DrawBrickClientRpc(NetworkManager.ConnectedClientsIds[i]);
+            }
+        }
     }
 
     private void PlaceFirstBrick()
@@ -162,6 +161,17 @@ public class MultiplayerManager : NetworkBehaviour
     public bool IsClientInTurn()
     {
         return clientInTurn == NetworkManager.LocalClientId;
+    }
+
+    public string GetPlayerName()
+    {
+        return playerName;
+    }
+
+    public void SetPlayerName(string playerName)
+    {
+        this.playerName = playerName;
+        PlayerPrefs.SetString("PlayerName", playerName);
     }
 
 }
