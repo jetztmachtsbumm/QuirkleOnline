@@ -7,13 +7,21 @@ using UnityEngine;
 public class GridSystem : NetworkBehaviour
 {
 
+    public enum PlacementDirection
+    {
+        NONE,
+        RIGHT,
+        LEFT,
+        UP,
+        DOWN
+    }
+
     public static GridSystem Instance { get; private set; }
 
     [SerializeField] private int width;
     [SerializeField] private int height;
 
     private GridCell[,] cells;
-    private Transform gridCellVisual;
 
     public void Awake()
     {
@@ -23,8 +31,6 @@ public class GridSystem : NetworkBehaviour
             Destroy(gameObject);
         }
         Instance = this;
-
-        gridCellVisual = Resources.Load<Transform>("GridCellVisual");
     }
 
     public void InitializeGrid()
@@ -85,44 +91,102 @@ public class GridSystem : NetworkBehaviour
         cells[gridCell.GetX(), gridCell.GetZ()] = gridCell;
     }
 
-    public List<GridCell> GetValidCells(BrickData brickData)
+    public List<GridCell> GetValidCells(BrickData brickData, bool firstPlacedBrickThisTurn, GridCell gridCell = default, GridCell lastPlacedBrickGridCell = default, PlacementDirection placementDirection = default)
     {
         List<GridCell> validCells = new List<GridCell>();
 
-        foreach(GridCell cell in cells)
+        if (firstPlacedBrickThisTurn)
         {
-            if (cell.IsOccupied()) continue;
-
-            List<GridCell> neighbours = GetNeighbours(cell);
-            List<GridCell> occupiedNeighbours = new List<GridCell>();
-
-            foreach(GridCell neighbour in neighbours)
+            foreach(GridCell cell in cells)
             {
-                if (neighbour.IsOccupied())
+                if (cell.IsOccupied()) continue;
+
+                List<GridCell> neighbours = GetNeighbours(cell);
+                List<GridCell> occupiedNeighbours = new List<GridCell>();
+
+                foreach(GridCell neighbour in neighbours)
                 {
-                    occupiedNeighbours.Add(neighbour);
+                    if (neighbour.IsOccupied())
+                    {
+                        occupiedNeighbours.Add(neighbour);
+                    }
                 }
-            }
 
-            if (occupiedNeighbours.Count == 0) continue;
+                if (occupiedNeighbours.Count == 0) continue;
 
-            List<GridCell> matchingNeighbours = new List<GridCell>();
-            foreach(GridCell occupiedNeighbour in occupiedNeighbours)
-            {
-                if(BrickData.Match(brickData, occupiedNeighbour.GetBrickData()))
+                List<GridCell> matchingNeighbours = new List<GridCell>();
+                foreach(GridCell occupiedNeighbour in occupiedNeighbours)
                 {
-                    matchingNeighbours.Add(occupiedNeighbour);
+                    if(BrickData.Match(brickData, occupiedNeighbour.GetBrickData()))
+                    {
+                        matchingNeighbours.Add(occupiedNeighbour);
+                    }
                 }
-            }
 
-            if (matchingNeighbours.Count != occupiedNeighbours.Count) continue;
+                if (matchingNeighbours.Count != occupiedNeighbours.Count) continue;
             
-            if(!FitsInRow(cell, brickData)) continue;
+                validCells.Add(cell);
+            }
+        }
+        else
+        {
+            if (!BrickData.Match(brickData, lastPlacedBrickGridCell.GetBrickData())) return validCells;
 
-            validCells.Add(cell);
+            foreach (GridCell neighbour in GetNeighbours(lastPlacedBrickGridCell))
+            {
+                if (neighbour.IsOccupied()) continue;
+
+                if (!FitsInRow(neighbour, brickData)) continue;
+
+                if (!IsBrickInPlacementDirection(lastPlacedBrickGridCell, gridCell, placementDirection)) continue;
+
+                validCells.Add(neighbour);
+            }
         }
 
         return validCells;
+    }
+
+    public PlacementDirection GetPlacementDirection(GridCell from, GridCell to)
+    {
+
+        if(from.GetX() == to.GetX() + 1)
+        {
+            return PlacementDirection.RIGHT;
+        }
+        else if(from.GetX() == to.GetX() - 1)
+        {
+            return PlacementDirection.LEFT;
+        }
+        else if (from.GetZ() == to.GetZ() + 1)
+        {
+            return PlacementDirection.UP;
+        }
+        else if (from.GetZ() == to.GetZ() - 1)
+        {
+            return PlacementDirection.DOWN;
+        }
+        else
+        {
+            return default;
+        }
+    }
+
+    private bool IsBrickInPlacementDirection(GridCell from, GridCell to, PlacementDirection placementDirection)
+    {
+        switch (placementDirection)
+        {
+            case PlacementDirection.RIGHT:
+                return from.GetX() == to.GetX() + 1;
+            case PlacementDirection.LEFT:
+                return from.GetX() == to.GetX() - 1;
+            case PlacementDirection.UP:
+                return from.GetZ() == to.GetZ() + 1;
+            case PlacementDirection.DOWN:
+                return from.GetZ() == to.GetZ() - 1;
+            default:
+                return true;
+        }
     }
 
     private List<GridCell> GetNeighbours(GridCell gridCell)
