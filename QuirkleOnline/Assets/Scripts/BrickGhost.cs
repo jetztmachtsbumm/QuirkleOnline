@@ -4,17 +4,18 @@ using TMPro;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class BrickGhost : NetworkBehaviour
 {
 
     public static BrickGhost Instance { get; private set; }
 
-    [SerializeField] private TextMeshPro shapeText;
-    [SerializeField] private TextMeshPro colorText;
+    [SerializeField] private Image brickImage;
 
     private Transform brickPrefab;
     private BrickData brickData;
+    private BrickVisualCreator brickVisualCreator;
     private GridCell lastBrickPlacedThisTurn;
     private GridSystem.PlacementDirection currentPlacementDirection;
     private bool isFirstBrickPlacedThisTurn = true;
@@ -29,6 +30,7 @@ public class BrickGhost : NetworkBehaviour
         Instance = this;
 
         brickPrefab = Resources.Load<Transform>("BrickTemplate");
+        brickVisualCreator = Resources.Load<BrickVisualCreator>("BrickVisualCreator");
         HideServerRpc();
     }
 
@@ -146,8 +148,7 @@ public class BrickGhost : NetworkBehaviour
 
     private void UpdateVisual()
     {
-        shapeText.text = brickData.GetBrickShape().ToString();
-        colorText.text = brickData.GetBrickColor().ToString();
+        brickVisualCreator.UpdateVisual(brickImage, brickData.GetBrickShape(), brickData.GetBrickColor());
     }
 
     [ServerRpc(RequireOwnership = false)]

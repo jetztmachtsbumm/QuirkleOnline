@@ -12,7 +12,7 @@ public struct BrickData : IEquatable<BrickData>, INetworkSerializable
         NONE,
         CIRCLE,
         CROSS,
-        FLOWER,
+        LIGHTNING_BOLT,
         SQUARE,
         STAR,
         DIAMOND

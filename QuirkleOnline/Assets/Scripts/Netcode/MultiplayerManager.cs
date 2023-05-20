@@ -103,7 +103,7 @@ public class MultiplayerManager : NetworkBehaviour
     [ClientRpc]
     private void FillDrawableBricksClientRpc()
     {
-        for(int brickQuantity = 0; brickQuantity < 2; brickQuantity++)
+        for(int brickQuantity = 0; brickQuantity < 3; brickQuantity++)
         {
             for(int shape = 1; shape < 7; shape++)
             {

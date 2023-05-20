@@ -28,10 +28,6 @@ public class GameManager : MonoBehaviour
         availableBricks = new List<BrickData>();
 
         MultiplayerManager.Instance.IncreaseClientsReadyServerRpc();
-        DrawBrick(new BrickData(BrickData.BrickShape.FLOWER, BrickData.BrickColor.BLUE));
-        DrawBrick(new BrickData(BrickData.BrickShape.FLOWER, BrickData.BrickColor.RED));
-        DrawBrick(new BrickData(BrickData.BrickShape.FLOWER, BrickData.BrickColor.ORANGE));
-        DrawBrick(new BrickData(BrickData.BrickShape.FLOWER, BrickData.BrickColor.PURPLE));
     }
 
     private void Update()

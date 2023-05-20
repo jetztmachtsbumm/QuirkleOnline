@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c03b8c454d74db148b05f665da6d2962, type: 3}
+  m_Name: BrickVisualCreator
+  m_EditorClassIdentifier: 
+  circleImage: {fileID: 21300000, guid: 81ba47e5551835441825b59297c62871, type: 3}
+  crossImage: {fileID: 21300000, guid: 06dcc27c0bd10da498996216fcc90200, type: 3}
+  lightningBoltImage: {fileID: 21300000, guid: 882bfb0d9a9d18441a06542d3d0653da, type: 3}
+  squareImage: {fileID: 21300000, guid: 8113f7a90a30e8f46a0a562371f29d1f, type: 3}
+  starImage: {fileID: 21300000, guid: 70d21647871b9a74ca4259f2427e19d7, type: 3}
+  diamondImage: {fileID: 21300000, guid: 032b42649bcd4fa438254fdeee7f3997, type: 3}
+  purple: {r: 0.44756076, g: 0.15690637, b: 0.8113208, a: 1}
+  red: {r: 0.9245283, g: 0.23113208, b: 0.23113208, a: 1}
+  blue: {r: 0.20784312, g: 0.56626916, b: 0.8666667, a: 1}
+  yellow: {r: 0.8396226, g: 0.7492904, b: 0.2732734, a: 1}
+  green: {r: 0.1363698, g: 0.509434, b: 0.10813459, a: 1}
+  orange: {r: 0.8773585, g: 0.48943138, b: 0.19450872, a: 1}

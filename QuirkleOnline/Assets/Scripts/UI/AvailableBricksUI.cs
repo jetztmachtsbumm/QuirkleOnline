@@ -10,6 +10,13 @@ public class AvailableBricksUI : MonoBehaviour
 
     [SerializeField] private Transform brickUITemplate;
 
+    private BrickVisualCreator brickVisualCreator;
+
+    private void Awake()
+    {
+        brickVisualCreator = Resources.Load<BrickVisualCreator>("BrickVisualCreator");
+    }
+
     private void Start()
     {
         GameManager.Instance.OnAvailableBricksChanged += GameManager_OnAvailableBricksChanged;
@@ -40,8 +47,7 @@ public class AvailableBricksUI : MonoBehaviour
                 }
             });
 
-            template.Find("ShapeText").GetComponent<TextMeshProUGUI>().text = availableBrick.GetBrickShape().ToString();
-            template.Find("ColorText").GetComponent<TextMeshProUGUI>().text = availableBrick.GetBrickColor().ToString();
+            brickVisualCreator.UpdateVisual(template.Find("BrickImage").GetComponent<Image>(), availableBrick.GetBrickShape(), availableBrick.GetBrickColor());
         }
     }
 

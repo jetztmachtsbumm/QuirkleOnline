@@ -3,14 +3,24 @@ using System.Collections.Generic;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Brick : MonoBehaviour
 {
 
-    [SerializeField] private TextMeshPro shapeText;
-    [SerializeField] private TextMeshPro colorText;
+    private static BrickVisualCreator brickVisualCreator;
+
+    [SerializeField] private Image brickImage;
 
     private BrickData brickData;
+
+    private void Awake()
+    {
+        if(brickVisualCreator == null)
+        {
+            brickVisualCreator = Resources.Load<BrickVisualCreator>("BrickVisualCreator");
+        }
+    }
 
     public BrickData GetBrickData()
     {
@@ -25,8 +35,7 @@ public class Brick : MonoBehaviour
 
     public void UpdateVisual()
     {
-        shapeText.text = brickData.GetBrickShape().ToString();
-        colorText.text = brickData.GetBrickColor().ToString();
+        brickVisualCreator.UpdateVisual(brickImage, brickData.GetBrickShape(), brickData.GetBrickColor());
     }
 
 }
