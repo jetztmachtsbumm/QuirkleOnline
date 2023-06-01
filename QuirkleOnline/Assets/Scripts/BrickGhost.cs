@@ -107,13 +107,12 @@ public class BrickGhost : NetworkBehaviour
             }
 
             GameManager.Instance.RemoveBrick(brickData);
-            MultiplayerManager.Instance.DrawBrickServerRpc(NetworkManager.LocalClientId);
             GameManager.Instance.IncreaseScore(GridSystem.Instance.CalculateScore(gridCell));
             GameManager.Instance.SetIsBrickSelected(false);
         }
     }
 
-    [ServerRpc]
+    [ServerRpc(RequireOwnership = false)]
     private void SpawnBrickVisualServerRpc(Vector3 spawnPosition)
     {
         SpawnBrickVisualClientRpc(spawnPosition);
@@ -126,7 +125,7 @@ public class BrickGhost : NetworkBehaviour
         spawnedBrick.GetComponent<Brick>().SetBrickData(brickData);
     }
 
-    [ServerRpc]
+    [ServerRpc(RequireOwnership = false)]
     private void UpdateGridCellServerRpc(GridCell gridCell)
     {
         UpdateGridCellClientRpc(gridCell);
@@ -173,6 +172,12 @@ public class BrickGhost : NetworkBehaviour
     private void HideClientRpc()
     {
         gameObject.SetActive(false);
+    }
+
+    public void SetupNextTurn()
+    {
+        currentPlacementDirection = GridSystem.PlacementDirection.NONE;
+        isFirstBrickPlacedThisTurn = true;
     }
 
 }
