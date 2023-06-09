@@ -63,6 +63,7 @@ public class GameManager : MonoBehaviour
     public void IncreaseScore(int score)
     {
         this.score += score;
+        MultiplayerManager.Instance.SetPlayerScoreServerRpc(MultiplayerManager.Instance.GetPlayerName(), this.score);
         OnScoreChanged?.Invoke(this, this.score);
     }
 

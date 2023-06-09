@@ -9,6 +9,7 @@ public class MultiplayerManager : NetworkBehaviour
     public static MultiplayerManager Instance { get; private set; }
 
     private List<BrickData> drawableBricks;
+    private Dictionary<string, int> playerScores;
     private ulong clientInTurn;
     private int clientsReady;
     private string playerName;
@@ -31,6 +32,7 @@ public class MultiplayerManager : NetworkBehaviour
     public void StartHost()
     {
         NetworkManager.StartHost();
+        playerScores = new Dictionary<string, int>();
     }
 
     public void StartClient()
@@ -74,7 +76,14 @@ public class MultiplayerManager : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     public void DrawBrickServerRpc(ulong clientId)
     {
-        DrawBrickClientRpc(clientId);
+        if (drawableBricks.Count > 0)
+        {
+            DrawBrickClientRpc(clientId);
+        }
+        else
+        {
+            NetworkManager.SceneManager.LoadScene("GameOverScene", UnityEngine.SceneManagement.LoadSceneMode.Single);
+        }
     }
 
     [ClientRpc]
@@ -86,6 +95,7 @@ public class MultiplayerManager : NetworkBehaviour
             GameManager.Instance.DrawBrick(brick);
             RemoveDrawableBrickServerRpc(drawableBricks.IndexOf(brick));
         }
+        Debug.Log(drawableBricks.Count);
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -103,7 +113,7 @@ public class MultiplayerManager : NetworkBehaviour
     [ClientRpc]
     private void FillDrawableBricksClientRpc()
     {
-        for(int brickQuantity = 0; brickQuantity < 3; brickQuantity++)
+        for(int brickQuantity = 0; brickQuantity < 1; brickQuantity++)
         {
             for(int shape = 1; shape < 7; shape++)
             {
@@ -158,6 +168,12 @@ public class MultiplayerManager : NetworkBehaviour
         SetClientInTurnClientRpc(nextClientInTurn);
     }
 
+    [ServerRpc(RequireOwnership = false)]
+    public void SetPlayerScoreServerRpc(string playerName, int score)
+    {
+        playerScores[playerName] = score;
+    }
+
     public bool IsClientInTurn()
     {
         return clientInTurn == NetworkManager.LocalClientId;
@@ -172,6 +188,11 @@ public class MultiplayerManager : NetworkBehaviour
     {
         this.playerName = playerName;
         PlayerPrefs.SetString("PlayerName", playerName);
+    }
+
+    public Dictionary<string, int> GetPlayerScores()
+    {
+        return playerScores;
     }
 
 }
